@@ -9,7 +9,7 @@ export const getPhoto = async (galleryURL: string) => {
     const pat = /https:\/\/lh3\.googleusercontent\.com\/pw\/AP1.*?-no/g;
     const urls = res.match(pat)
 
-    // console.log('data', urls)
+    console.log('data', urls)
     return urls
 }
 
