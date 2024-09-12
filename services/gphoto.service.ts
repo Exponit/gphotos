@@ -3,12 +3,18 @@ import {  writeFileSync } from 'fs'
 
 
 export const getPhoto = async (galleryURL: string) => {
-    let res: any = await fetch(galleryURL)
-    res = await res.text()
-    console.log('galleryURL',galleryURL);
-    // console.log('R.E.S-----',res);
+    // Fetch the latest content from the gallery URL
+    const res = await fetch(galleryURL, {
+        cache: 'no-store', // Disable caching to always get fresh content
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    });
+    const content = await res.text();
+
+    console.log('galleryURL', galleryURL);
     const pat = /https:\/\/lh3\.googleusercontent\.com\/pw\/AP1.*?-no/g;
-    const urls = res.match(pat)
+    const urls = content.match(pat) || [];
 
     // Validate each URL
     const validUrls = await Promise.all(urls.map(async (url) => {
