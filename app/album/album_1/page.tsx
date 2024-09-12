@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import Card from "@/components/Card";
 import Lightbox from "@/components/LightBox";
-import Loading from "@/components/Loading";
-
 
 export default function Home() {
   const [imageURLs, setImageURLs] = useState([]);
@@ -31,12 +29,12 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center min-h-screen w-full p-4 sm:p-8 md:p-16 lg:p-24">
+    <main className="flex flex-col items-center justify-between p-24">
       <h1 className="text-2xl mb-8">Photo Gallery</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {imageURLs[0] ? imageURLs.map((item, idx) =>
           <Card url={item} key={idx} onClick={() => setSelectedImageIndex(idx)} />
-        ) : <Loading/>}
+        ) : <h1 className="text-2xl p-20">Loading...</h1>}
       </div>
       {selectedImageIndex !== null && (
         <Lightbox
