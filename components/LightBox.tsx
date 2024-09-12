@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { setSize } from '@/services/gphoto.service';
+import { useSwipeable } from 'react-swipeable';
 
 interface LightboxProps {
   src: string;
@@ -11,6 +12,12 @@ interface LightboxProps {
 }
 
 const Lightbox: React.FC<LightboxProps> = ({ src, onClose, onPrev, onNext, hasPrev, hasNext }) => {
+  const handlers = useSwipeable({
+    onSwipedLeft: () => hasNext && onNext(),
+    onSwipedRight: () => hasPrev && onPrev(),
+    trackMouse: true
+  });
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -33,32 +40,29 @@ const Lightbox: React.FC<LightboxProps> = ({ src, onClose, onPrev, onNext, hasPr
       className="fixed inset-0 bg-black flex items-center justify-center z-50" 
       onClick={onClose}
     >
-      {hasPrev && (
-        <button 
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl focus:outline-none"
-          onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        >
-          &#8592;
-        </button>
-      )}
-      <div 
-        className="max-w-4xl max-h-4xl" 
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div {...handlers} className="relative max-w-3xl w-full h-full flex items-center justify-center">
         <img 
           src={setSize(src, 1200, 1200)} 
           alt="Enlarged image" 
-          className="max-w-full max-h-[90vh] object-contain"
+          className="max-h-full max-w-full object-contain"
         />
+        {hasPrev && (
+          <button 
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl focus:outline-none hidden sm:block"
+            onClick={(e) => { e.stopPropagation(); onPrev(); }}
+          >
+            &#8592;
+          </button>
+        )}
+        {hasNext && (
+          <button 
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl focus:outline-none hidden sm:block"
+            onClick={(e) => { e.stopPropagation(); onNext(); }}
+          >
+            &#8594;
+          </button>
+        )}
       </div>
-      {hasNext && (
-        <button 
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl focus:outline-none"
-          onClick={(e) => { e.stopPropagation(); onNext(); }}
-        >
-          &#8594;
-        </button>
-      )}
     </div>
   );
 };
